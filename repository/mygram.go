@@ -61,7 +61,7 @@ func (r Repo) UserLogin(user model.User) (res model.User, err error) {
 
 // Photo Endpoint
 func (r Repo) PhotoGetAll() (res []model.Photo, err error) {
-	err = r.db.Model(&model.Photo{}).Preload("Comments").Find(&res).Error
+	err = r.db.Model(&model.Photo{}).Preload("Comments").Preload("User").Find(&res).Error
 	if err != nil {
 		return res, err
 	}
@@ -70,7 +70,7 @@ func (r Repo) PhotoGetAll() (res []model.Photo, err error) {
 }
 
 func (r Repo) PhotoGet(photo model.Photo) (res model.Photo, err error) {
-	err = r.db.Model(&model.Photo{}).Preload("Comments").First(&res, photo.ID).Error
+	err = r.db.Model(&model.Photo{}).Preload("Comments").Preload("User").First(&res, photo.ID).Error
 	if err != nil {
 		return res, err
 	}

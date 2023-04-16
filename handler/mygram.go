@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/mail"
 	"strconv"
+	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -632,10 +633,18 @@ func (h HttpServer) SocialMediaCreate(c *gin.Context) {
 	res, err := h.app.SocialMediaCreate(newSocialMedia)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
-		})
+		if strings.Contains(err.Error(), "duplicate key") {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": err.Error(),
+				"status":  http.StatusBadRequest,
+			})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
+				"status":  http.StatusInternalServerError,
+			})
+		}
+
 		return
 	}
 

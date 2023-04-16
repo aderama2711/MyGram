@@ -15,13 +15,13 @@ type GormModel struct {
 
 type User struct {
 	GormModel
-	Username    string    `json:"username" gorm:"not null;unique;type:varchar(255);" binding:"required"`
-	Email       string    `json:"email" gorm:"not null;unique;type:varchar(255);" binding:"required"`
-	Password    string    `json:"password" gorm:"not null;type:varchar(255);" binding:"required"`
-	Age         int       `json:"age" gorm:"not null;"`
-	Photos      []Photo   `json:"photos" gorm:"OnUpdate:CASCADE,OnDelete:SET NULL"`
-	Comments    []Comment `json:"comments" gorm:"OnUpdate:CASCADE,OnDelete:SET NULL"`
-	SocialMedia SocialMedia
+	Username    string       `json:"username" gorm:"not null;unique;type:varchar(255);" binding:"required"`
+	Email       string       `json:"email" gorm:"not null;unique;type:varchar(255);" binding:"required"`
+	Password    string       `json:"password" gorm:"not null;type:varchar(255);" binding:"required"`
+	Age         int          `json:"age" gorm:"not null;"`
+	Photos      []Photo      `json:"photos,omitempty" gorm:"OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Comments    []Comment    `json:"comments,omitempty" gorm:"OnUpdate:CASCADE,OnDelete:SET NULL"`
+	SocialMedia *SocialMedia `json:"social_media,omitempty"`
 }
 
 type Photo struct {
@@ -31,7 +31,7 @@ type Photo struct {
 	PhotoUrl string    `json:"photo_url" gorm:"not null;type:varchar(255);" binding:"required"`
 	UserID   int       `json:"user_id"`
 	Comments []Comment `json:"comments" gorm:"OnUpdate:CASCADE,OnDelete:SET NULL"`
-	User     *User
+	User     *User     `json:"user,omitempty"`
 }
 
 type Comment struct {
@@ -41,8 +41,8 @@ type Comment struct {
 	Updated_At time.Time `json:"updated_at" gorm:"type:TIMESTAMP WITHOUT TIME ZONE;default:CURRENT_TIMESTAMP"`
 	PhotoID    int       `json:"photo_id"`
 	UserID     int       `json:"user_id"`
-	Photo      *Photo
-	User       *User
+	Photo      *Photo    `json:"photo,omitempty"`
+	User       *User     `json:"user,omitempty"`
 }
 
 type SocialMedia struct {
@@ -52,7 +52,7 @@ type SocialMedia struct {
 	SocialMediaUrl string    `json:"social_media_url"`
 	Created_At     time.Time `json:"created_at" gorm:"type:TIMESTAMP WITHOUT TIME ZONE;default:CURRENT_TIMESTAMP"`
 	Updated_At     time.Time `json:"updated_at" gorm:"type:TIMESTAMP WITHOUT TIME ZONE;default:CURRENT_TIMESTAMP"`
-	User           *User
+	User           *User     `json:"user,omitempty"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
